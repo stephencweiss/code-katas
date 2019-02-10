@@ -1,0 +1,119 @@
+'use strict';
+
+const fs = require ('fs');
+const path = require ('path');
+
+const puzzleInput = path.resolve(__dirname, './puzzle-input')
+const sampleInput = path.resolve(__dirname, './sample-input')
+
+let logString = ''
+let logEntries = []
+
+debugger
+const readPuzzleInput = (file) => {
+  // I: A file with sample data
+  // O: An array of numbers
+  return new Promise ((resolve, reject) => {
+
+    let readStream = fs.createReadStream(file, {encoding:'utf8'});
+
+    readStream
+    .on('data', function processChunk(chunk) {
+      logString += chunk;
+    })
+    .on('end', () => {
+      logEntries = logString.split('\n')
+      resolve(logEntries)
+    })
+  })
+};
+
+/**
+* Frequency Queries
+* Q queries - each are two ints
+* Queries are tuples.
+* The first element reflects the operation. 1 = Insert, 2 = Delete, 3 = SearchFor
+* The second element reflects the target value.
+
+* @arg {Array} queries - A two-dimensional array of queries
+* @returns {Array} Answers - The result of finding the searched for parameter with a query 3
+*/
+function freqQuery(queries) {
+  debugger;
+
+  const storage = {};
+  const frequencies = {};
+  const answers = [];
+  queries.forEach(query => {
+    const qType = Number(query[0]);
+    const qVal = Number(query[1]);
+    switch(qType) {
+      // if i’m given a query with a 1 in the 0th index, increment object
+      case 1:
+        const curVal = storage[qVal]; // integer
+        const newVal = curVal ? curVal + 1 : 1; // integer
+        const freqVal = frequencies[newVal]; // integer / undefined
+        const freqPrevVal = frequencies[newVal - 1]; // in
+
+        const curFreqArr = freqVal ? freqVal : []
+        curFreqArr.push(qVal)
+
+        if (freqPrevVal) {
+          const idx = freqPrevVal.indexOf(qVal);
+          freqPrevVal.splice(idx, 1);
+          frequencies[newVal -1] = freqPrevVal;
+        }
+
+        storage[qVal] = newVal;
+        frequencies[newVal] = curFreqArr;
+        break;
+      case 2:
+        if (storage[qVal] > 0) {
+          const val = storage[qVal] - 1;
+          const prevOccurenceCount = frequencies[val + 1]
+          const newOccurenceCount = frequencies[val]; // the number of occurences of qVal
+          storage[qVal] = newOccurenceCount;
+
+          const curArr = newOccurenceCount ? newOccurenceCount : []
+          curArr.push(qVal);
+
+          const idx = prevOccurenceCount.indexOf(qVal);
+          prevOccurenceCount.splice(idx, 1);
+          frequencies[val + 1] = prevOccurenceCount;
+
+          storage[qVal] = val;
+          frequencies[newOccurenceCount] = curArr;
+
+          // if (newOccurenceCount in frequencies) {
+          //   frequencies[newOccurenceCount] += 1
+          // }
+          // else {
+          //   frequencies[newOccurenceCount] = 1
+          // }
+
+          // frequencies[prevOccurenceCount] = Math.max(frequencies[prevOccurenceCount] - 1, 0)
+        }
+        break;
+    // if i’m given a query with a 3 in the 0th index, search among all values
+      case 3:
+        if (frequencies[qVal] > 0) {
+          answers.push(1)
+        }
+        else {
+          answers.push(0)
+        }
+        break;
+      }
+  })
+  return answers;
+}
+
+
+
+Promise.resolve(readPuzzleInput(puzzleInput))
+.then(queryStream => {
+  return queryStream.map((el) => el.split(' '))
+})
+.then(queries => freqQuery(queries))
+.then(answer => console.log(`the answer is -> `, answer));
+
