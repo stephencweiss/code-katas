@@ -1,0 +1,26 @@
+{
+  "name": "hackerrankchallenges",
+  "version": "0.0.1",
+  "description": "playground for hacker rank challenges",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+
+    "format": "prettier --trailing-comma es5 --no-semi --single-quote --write '**/*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stephencweiss/hackerRankChallenges.git"
+  },
+  "author": "Stephen Weiss <stephencweiss@gmail.com> (https://stephencharlesweiss.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stephencweiss/hackerRankChallenges/issues"
+  },
+  "homepage": "https://github.com/stephencweiss/hackerRankChallenges#readme",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "eslint": "^6.8.0",
+    "prettier": "^1.19.1"
+  }
+}
