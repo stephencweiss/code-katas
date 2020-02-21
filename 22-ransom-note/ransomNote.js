@@ -11,15 +11,15 @@ function checkMagazine(magazine, note) {
   let wordsNeeded = {}
 
   if (note.length > magazine.length) {
-    console.log(`No`);
+    console.log(`No`)
     return `No`
   }
 
   for (let word in note) {
     if (wordsNeeded[note[word]]) {
-        wordsNeeded[note[word]] += 1;
+      wordsNeeded[note[word]] += 1
     } else {
-        wordsNeeded[note[word]] = 1;
+      wordsNeeded[note[word]] = 1
     }
   }
 
@@ -28,19 +28,22 @@ function checkMagazine(magazine, note) {
       delete wordsNeeded[magazine[word]]
     }
     if (wordsNeeded[magazine[word]] > 1) {
-      wordsNeeded[magazine[word]] -= 1;
+      wordsNeeded[magazine[word]] -= 1
     }
   }
 
   if (Object.keys(wordsNeeded).length === 0) {
-      console.log(`Yes`);
-      return `Yes`
-  }
-  else {
-      console.log(`No`);
-      return `No`
+    console.log(`Yes`)
+    return `Yes`
+  } else {
+    console.log(`No`)
+    return `No`
   }
 }
 
-
-console.log(checkMagazine([`give`,`me`, `one`, `grand`, `today`, `night`], [`Give`, `one`, `grand`, `today`]));
+console.log(
+  checkMagazine(
+    [`give`, `me`, `one`, `grand`, `today`, `night`],
+    [`Give`, `one`, `grand`, `today`]
+  )
+)

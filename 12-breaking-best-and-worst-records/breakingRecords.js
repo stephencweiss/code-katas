@@ -1,25 +1,25 @@
-const breakingRecords = (scores) => {
-    debugger;
-    let newInput = scores.split('\n');
-    let games = parseInt(newInput[0]);
-    let newScores = newInput[1].split(" ");
-    for (let i = 0; i< newScores.length; i++){
-        newScores[i] = parseInt(newScores[i]);
+const breakingRecords = scores => {
+  debugger
+  let newInput = scores.split('\n')
+  let games = parseInt(newInput[0])
+  let newScores = newInput[1].split(' ')
+  for (let i = 0; i < newScores.length; i++) {
+    newScores[i] = parseInt(newScores[i])
+  }
+  let highScores = 0
+  let lowScores = 0
+  let currentHigh = newScores[0]
+  let currentLow = newScores[0]
+  for (let i = 1; i < games; i++) {
+    if (newScores[i] > currentHigh) {
+      currentHigh = newScores[i]
+      highScores++
+    } else if (newScores[i] < currentLow) {
+      currentLow = newScores[i]
+      lowScores++
     }
-    let highScores = 0;
-    let lowScores = 0;
-    let currentHigh = newScores[0];
-    let currentLow = newScores[0];    
-    for (let i = 1; i < games; i++){
-        if (newScores[i]>currentHigh){
-            currentHigh = newScores[i];
-            highScores++;
-        } else if (newScores[i]<currentLow){
-            currentLow = newScores[i];
-            lowScores++;
-        }
-    }
-    console.log(highScores+" "+lowScores);
+  }
+  console.log(highScores + ' ' + lowScores)
 }
 
 // function breakingRecords(scores) {

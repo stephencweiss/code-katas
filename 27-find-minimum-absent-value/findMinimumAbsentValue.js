@@ -10,19 +10,19 @@
  * Each element of A is in the range [-1000000, 1000000]
  */
 function findMinimumPositiveNotPresent(A) {
-  let minPos = 1; // The smallest possible number
-  let filteredA = A.filter(el => el > 0 )
+  let minPos = 1 // The smallest possible number
+  let filteredA = A.filter(el => el > 0)
   if (filteredA.length === 0) {
-    return minPos;
+    return minPos
   }
 
-  const setA = new Set ([...filteredA])
+  const setA = new Set([...filteredA])
   console.log(setA)
-  for (let i = 0; i < setA.size; i += 1){
-    if (setA.has(minPos)){
-        minPos += 1;
+  for (let i = 0; i < setA.size; i += 1) {
+    if (setA.has(minPos)) {
+      minPos += 1
     } else {
-      return minPos;
+      return minPos
     }
   }
 }

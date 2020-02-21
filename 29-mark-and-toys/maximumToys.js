@@ -1,4 +1,3 @@
-
 /**
  *
  * @arg {Array} prices - A list of prices, where each price is an integer
@@ -7,9 +6,11 @@
  */
 function maximumToys(prices, budget) {
   // sort the prices in ascending order
-  const sortAscending = (a,b) => { return a<=b ? -1 : 1}
+  const sortAscending = (a, b) => {
+    return a <= b ? -1 : 1
+  }
   prices.sort(sortAscending)
-  let spentSoFar = 0;
+  let spentSoFar = 0
   let itemsAfforded = 0
   let index = 0
   while (spentSoFar < budget) {
@@ -28,4 +29,4 @@ function maximumToys(prices, budget) {
 //   return a <= b ? -1 : 1
 // }
 
-console.log(maximumToys([12,1,2,5,8],16)); // 4
+console.log(maximumToys([12, 1, 2, 5, 8], 16)) // 4
