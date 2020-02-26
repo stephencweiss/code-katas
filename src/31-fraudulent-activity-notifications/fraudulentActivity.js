@@ -37,14 +37,15 @@ function activityNotifications(expenditures, lookbackPeriod) {
   let median = 0
   let lookbackEnd = lookbackPeriod
   let lookbackStart = 0
+  let medianIndexLow = Math.floor((lookbackPeriod-1) / 2)
+  let medianIndexHigh = Math.ceil((lookbackPeriod-1) / 2)
   // if (lookbackPeriod === expenditures.length) return notificationCount;
   // given a lookback period - take a subset of the expenditures array and pass into calculateMedian (0 -> d)
   while (lookbackEnd < expenditures.length) {
-    const expenseSubset = expenditures.slice(lookbackStart, lookbackEnd)
+    const expenseSubset = expenditures.slice(lookbackStart, lookbackEnd).sort()
     const currentExpense = expenditures[lookbackEnd]
-    median = calculateMedian(expenseSubset)
-    const fraudAlert = assessFraudLevel(median, currentExpense)
-    console.log({ expenseSubset, currentExpense, median, fraudAlert })
+    median = calculateMedian(expenseSubset, medianIndexLow, medianIndexHigh)
+
     if (assessFraudLevel(median, currentExpense)) {
       notificationCount += 1
     }
@@ -54,19 +55,11 @@ function activityNotifications(expenditures, lookbackPeriod) {
   return notificationCount
 }
 
-function calculateMedian(expendituresSubset) {
-  const sortedExpenses = expendituresSubset.sort()
-  const midIndex = sortedExpenses.length / 2
-  let medianVal
-
-  if (expendituresSubset.length % 2 === 0) {
-    const lowVal = sortedExpenses[midIndex - 1]
-    const highVal = sortedExpenses[midIndex + 1]
-    medianVal = (lowVal + highVal) / 2
-  } else {
-    medianVal = expendituresSubset[Math.floor(midIndex)]
-  }
-  return medianVal
+function calculateMedian(expendituresSubset, medianIndexLow, medianIndexHigh) {
+  return (
+    (expendituresSubset[medianIndexHigh] + expendituresSubset[medianIndexLow]) /
+    2
+  )
 }
 
 function assessFraudLevel(lookbackMedian, currentExpense) {
@@ -76,3 +69,37 @@ function assessFraudLevel(lookbackMedian, currentExpense) {
 }
 
 main()
+
+
+// function activityNotifications (expenditure, d) {
+//
+//     // Number of notifications
+//     let n = 0
+//
+//     // Set midpoints for median calculation
+//     let [ i1, i2 ] = [ Math.floor((d-1)/2), Math.ceil((d-1)/2) ]
+//     let m1, m2, m
+//
+//     // Initialize count sorted subarray
+//     let cs = new Array(201).fill(0)
+//     for (let i = d-1; i >= 0; i--) cs[expenditure[i]]++
+//
+//     // Iterate through expenditures
+//     for (let i = d, l = expenditure.length; i < l; i++) {
+//
+//         // Find median
+//         for (let j = 0, k = 0; k <= i1; k += cs[j], j++) m1 = j
+//         for (let j = 0, k = 0; k <= i2; k += cs[j], j++) m2 = j
+//         let m = (m1 + m2) / 2
+//
+//         // Check if notification is given
+//         if (expenditure[i] >= m * 2) n++
+//
+//         // Replace subarray elements
+//         cs[expenditure[i-d]]--
+//         cs[expenditure[i]]++
+//     }
+//
+//     return n
+// }
+//
