@@ -2,7 +2,7 @@ const fs = require('fs')
 
 function main() {
   readInput(
-    '/Users/stephen/_coding/personal/katas/hackerRankChallenges/src/31-fraudulent-activity-notifications/altInput'
+    '/Users/stephen/_coding/personal/katas/hackerRankChallenges/src/31-fraudulent-activity-notifications/sampleInput'
   )
     .then(input => {
       const lookback = Number.parseInt(input[0], 10)
@@ -34,72 +34,66 @@ function readInput(filePath) {
  */
 function activityNotifications(expenditures, lookbackPeriod) {
   let notificationCount = 0
-  let median = 0
-  let lookbackEnd = lookbackPeriod
-  let lookbackStart = 0
-  let medianIndexLow = Math.floor((lookbackPeriod-1) / 2)
-  let medianIndexHigh = Math.ceil((lookbackPeriod-1) / 2)
-  // if (lookbackPeriod === expenditures.length) return notificationCount;
-  // given a lookback period - take a subset of the expenditures array and pass into calculateMedian (0 -> d)
-  while (lookbackEnd < expenditures.length) {
-    const expenseSubset = expenditures.slice(lookbackStart, lookbackEnd).sort()
-    const currentExpense = expenditures[lookbackEnd]
-    median = calculateMedian(expenseSubset, medianIndexLow, medianIndexHigh)
+  let medianIndexLow = Math.floor((lookbackPeriod - 1) / 2)
+  let medianIndexHigh = Math.ceil((lookbackPeriod - 1) / 2)
 
-    if (assessFraudLevel(median, currentExpense)) {
-      notificationCount += 1
-    }
-    lookbackEnd += 1
-    lookbackStart += 1
+  /**
+   * This creates an empty array of lookback expenses
+   * 201 indices because expenses are >=0 & <=200.
+   */
+  const sortedLookback = Array(201).fill(0)
+
+  /**
+   * Track each expense by incrementing the associated expense's index
+   * This will be useful later to make sure that we are always tracking only the minimum number of expenses
+   */
+  for (let i = lookbackPeriod - 1; i >= 0; i -= 1)
+    sortedLookback[expenditures[i]] += 1
+
+  // Iterate through the expenses - beginning with the first after the lookback period
+  for (
+    let expenseInd = lookbackPeriod;
+    expenseInd < expenditures.length;
+    expenseInd += 1
+  ) {
+    const median = findMedian(sortedLookback, medianIndexLow, medianIndexHigh)
+    if (expenditures[expenseInd] >= 2 * median) notificationCount += 1
+
+    /**
+     * Drop the lowest earliest lookback expenses (i.e. lowest index from expenditures)
+     * Add the most recent expense
+     * In this way, we keep one array for the entire period, limiting creation and space requirements
+     */
+    sortedLookback[expenditures[expenseInd - lookbackPeriod]] -= 1
+    sortedLookback[expenditures[expenseInd]] += 1
   }
   return notificationCount
 }
 
-function calculateMedian(expendituresSubset, medianIndexLow, medianIndexHigh) {
-  return (
-    (expendituresSubset[medianIndexHigh] + expendituresSubset[medianIndexLow]) /
-    2
-  )
-}
+/**
+ *
+ * @param {*} sortedLookback
+ * @param {*} medianIndexLow
+ * @param {*} medianIndexHigh
+ *
+ * The for loops work by:
+ *  - incrementing the value (which is equivalent to the index position in sortedLookback)
+ *  - stopping when the index reaches the target medianIndex
+ */
+function findMedian(sortedLookback, medianIndexLow, medianIndexHigh) {
+  let medianValueLow, medianValueHigh
+  for (
+    let value = 0, index = 0;
+    index <= medianIndexHigh;
+    index += sortedLookback[value], value++
+  ) {
+    if (index <= medianIndexLow) {
+      medianValueLow = value
+    }
+    medianValueHigh = value
+  }
 
-function assessFraudLevel(lookbackMedian, currentExpense) {
-  if (currentExpense >= 2 * lookbackMedian) {
-    return true
-  } else return false
+  return (medianValueHigh + medianValueLow) / 2
 }
 
 main()
-
-
-// function activityNotifications (expenditure, d) {
-//
-//     // Number of notifications
-//     let n = 0
-//
-//     // Set midpoints for median calculation
-//     let [ i1, i2 ] = [ Math.floor((d-1)/2), Math.ceil((d-1)/2) ]
-//     let m1, m2, m
-//
-//     // Initialize count sorted subarray
-//     let cs = new Array(201).fill(0)
-//     for (let i = d-1; i >= 0; i--) cs[expenditure[i]]++
-//
-//     // Iterate through expenditures
-//     for (let i = d, l = expenditure.length; i < l; i++) {
-//
-//         // Find median
-//         for (let j = 0, k = 0; k <= i1; k += cs[j], j++) m1 = j
-//         for (let j = 0, k = 0; k <= i2; k += cs[j], j++) m2 = j
-//         let m = (m1 + m2) / 2
-//
-//         // Check if notification is given
-//         if (expenditure[i] >= m * 2) n++
-//
-//         // Replace subarray elements
-//         cs[expenditure[i-d]]--
-//         cs[expenditure[i]]++
-//     }
-//
-//     return n
-// }
-//
