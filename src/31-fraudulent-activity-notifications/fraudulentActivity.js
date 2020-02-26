@@ -2,12 +2,12 @@ const fs = require('fs')
 
 function main() {
   readInput(
-    '/Users/stephen/_coding/personal/katas/hackerRankChallenges/src/31-fraudulent-activity-notifications/sampleInput'
+    '/Users/stephen/_coding/personal/katas/hackerRankChallenges/src/31-fraudulent-activity-notifications/altInput'
   )
     .then(input => {
       const lookback = Number.parseInt(input[0], 10)
       const expenses = input[1].map(el => Number.parseInt(el, 10))
-      return activityNotifications(lookback, expenses)
+      return activityNotifications(expenses, lookback)
     })
     .then(notifications => console.log({ notifications }))
 }
@@ -32,7 +32,7 @@ function readInput(filePath) {
  * C: `1<=n<=2x10^5`, `1<=d<=n`, `0<=expenditure[i]<=200`
  * E:
  */
-function activityNotifications(lookbackPeriod, expenditures) {
+function activityNotifications(expenditures, lookbackPeriod) {
   let notificationCount = 0
   let median = 0
   let lookbackEnd = lookbackPeriod
@@ -40,30 +40,28 @@ function activityNotifications(lookbackPeriod, expenditures) {
   // if (lookbackPeriod === expenditures.length) return notificationCount;
   // given a lookback period - take a subset of the expenditures array and pass into calculateMedian (0 -> d)
   while (lookbackEnd < expenditures.length) {
-      const expenseSubset = expenditures.slice(lookbackStart, lookbackEnd)
-      const currentExpense = expenditures[lookbackEnd];
-      median = calculateMedian(expenseSubset)
-      const fraudAlert = assessFraudLevel(median,currentExpense )
-      console.log({expenseSubset, currentExpense, median, fraudAlert})
-    if (assessFraudLevel(median,currentExpense )) {
+    const expenseSubset = expenditures.slice(lookbackStart, lookbackEnd)
+    const currentExpense = expenditures[lookbackEnd]
+    median = calculateMedian(expenseSubset)
+    const fraudAlert = assessFraudLevel(median, currentExpense)
+    console.log({ expenseSubset, currentExpense, median, fraudAlert })
+    if (assessFraudLevel(median, currentExpense)) {
       notificationCount += 1
     }
     lookbackEnd += 1
     lookbackStart += 1
   }
   return notificationCount
-
-  // determine if d + 1 is
 }
 
 function calculateMedian(expendituresSubset) {
-  const midIndex = expendituresSubset.sort().length / 2
+  const sortedExpenses = expendituresSubset.sort()
+  const midIndex = sortedExpenses.length / 2
   let medianVal
 
   if (expendituresSubset.length % 2 === 0) {
-    // even number
-    const lowVal = midIndex.floor(midIndex)
-    const highVal = midIndex.ceiling(midIndex)
+    const lowVal = sortedExpenses[midIndex - 1]
+    const highVal = sortedExpenses[midIndex + 1]
     medianVal = (lowVal + highVal) / 2
   } else {
     medianVal = expendituresSubset[Math.floor(midIndex)]
