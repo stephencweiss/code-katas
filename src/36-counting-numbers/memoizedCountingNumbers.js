@@ -10,61 +10,43 @@ const validEnds = {
   9: [2, 4],
 }
 
-let globalCount = 0
-let invocations = 0
 function countNumbers(startNum, numDigits) {
-  findAvailableLPoints(startNum, numDigits - 1)
-  return globalCount
+  const cache = {}
+  const key = JSON.stringify({ startNum, numDigits })
+  if (!cache[key]) {
+    cache[key] = findAvailableLPoints(startNum, numDigits - 1, cache)
+    console.log(`new cache value ->`, { key, val: cache[key] })
+  } else {
+    console.log(`found in cache -> `, { key, val: cache[key] })
+  }
+  return cache[key]
 }
 
-function findAvailableLPoints(startNum, numDigits) {
-  invocations += 1
+function findAvailableLPoints(startNum, numDigits, cache) {
   if (numDigits === 0) {
-    return (globalCount += 1)
+    return 1
   }
 
   const lPoints = validEnds[startNum]
 
-  lPoints.forEach(l => findAvailableLPoints(l, numDigits - 1))
-}
-
-function memoize (func) {
-    const cache = {};
-    return function () {
-        console.log(`cache ->`, cache)
-        const key = JSON.stringify(arguments)
-        if (cache[key]) {
-            return cache[key]
-        }
-        else {
-            let val = func.apply(this, arguments);
-            cache[key] = val
-            return val;
-        }
+  return lPoints.reduce((acc, cur) => {
+    const newKey = JSON.stringify({ startNum: cur, numDigits: numDigits - 1 })
+    if (!cache[newKey]) {
+      cache[newKey] = findAvailableLPoints(cur, numDigits - 1, cache)
+      console.log(`new cache value ->`, { key: newKey, val: cache[newKey] })
     }
+    {
+      console.log(`found in cache -> `, { key: newKey, val: cache[newKey] })
+    }
+    acc += cache[newKey]
+    return acc
+  }, 0)
 }
 
-const memoizedCountNumbers = memoize(countNumbers)
-
+console.log(`basic -> `, countNumbers(0, 2))
 console.log(`result -->`, countNumbers(0, 3))
-console.log(`invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
 console.log(`result -->`, countNumbers(0, 4))
-console.log(`invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
-console.log(`result -->`, memoizedCountNumbers(0, 3))
-console.log(`memoized invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
-console.log(`result -->`, memoizedCountNumbers(0, 3))
-console.log(`memoized invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
-console.log(`result -->`, memoizedCountNumbers(0, 2))
-console.log(`memoized invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
-console.log(`result -->`, memoizedCountNumbers(0, 4))
-console.log(`memoized invocations ->`, {invocations})
+console.log(`result -->`, countNumbers(0, 3))
+console.log(`result -->`, countNumbers(0, 3))
+console.log(`result -->`, countNumbers(0, 2))
+console.log(`result -->`, countNumbers(0, 4))
