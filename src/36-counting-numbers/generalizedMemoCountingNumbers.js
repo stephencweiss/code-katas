@@ -28,43 +28,29 @@ function findAvailableLPoints(startNum, numDigits) {
   lPoints.forEach(l => findAvailableLPoints(l, numDigits - 1))
 }
 
-function memoize (func) {
-    const cache = {};
-    return function () {
-        console.log(`cache ->`, cache)
-        const key = JSON.stringify(arguments)
-        if (cache[key]) {
-            return cache[key]
-        }
-        else {
-            let val = func.apply(this, arguments);
-            cache[key] = val
-            return val;
-        }
+function memoize(func) {
+  const cache = {}
+  return (...arguments) => {
+    const key = [...arguments]
+    if (cache[key]) {
+      return cache[key]
+    } else {
+      let val = func(...arguments)
+      cache[key] = val
+      return val
     }
+  }
 }
 
 const memoizedCountNumbers = memoize(countNumbers)
+console.log(memoizedCountNumbers)
 
-console.log(`result -->`, countNumbers(0, 3))
-console.log(`invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
-console.log(`result -->`, countNumbers(0, 4))
-console.log(`invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
 console.log(`result -->`, memoizedCountNumbers(0, 3))
-console.log(`memoized invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
+console.log(`break \n\n`)
 console.log(`result -->`, memoizedCountNumbers(0, 3))
-console.log(`memoized invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
+
+console.log(`break \n\n`)
 console.log(`result -->`, memoizedCountNumbers(0, 2))
-console.log(`memoized invocations ->`, {invocations})
-globalCount = 0
-invocations = 0
+
+console.log(`break \n\n`)
 console.log(`result -->`, memoizedCountNumbers(0, 4))
-console.log(`memoized invocations ->`, {invocations})
