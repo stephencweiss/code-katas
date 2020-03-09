@@ -4,8 +4,7 @@
   "description": "playground for hacker rank challenges",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-
+    "test": "jest",
     "format": "prettier --trailing-comma es5 --no-semi --single-quote --write '**/*.js'"
   },
   "repository": {
@@ -19,8 +18,13 @@
   },
   "homepage": "https://github.com/stephencweiss/hackerRankChallenges#readme",
   "dependencies": {
-    "babel": "^6.23.0",
     "eslint": "^6.8.0",
     "prettier": "^1.19.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "babel-jest": "^25.1.0",
+    "jest": "^25.1.0"
   }
 }
