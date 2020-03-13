@@ -34,7 +34,6 @@ function consecutiveLetters(str) {
     }
   }
 
-  console.log(`deleted -> `, deleted)
   return letters.join('')
 }
 
