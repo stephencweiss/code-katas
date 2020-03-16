@@ -5,7 +5,6 @@ export function minSalesPath(rootNode) {
 
   function addSalesPath(node, currentSalesPathVal = 0) {
     const salesPathVal = currentSalesPathVal + node.cost
-    console.log(minSalesPathVal, currentSalesPathVal)
 
     // base case - current sales path > minSalesPath
     if (salesPathVal > minSalesPathVal) {
