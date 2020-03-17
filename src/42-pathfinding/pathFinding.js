@@ -7,7 +7,6 @@ export function pathFinding(n) {
   function findPath(position) {
     let [east, north] = position
 
-    console.log(east, north)
     if (east === destination && north === destination) {
       pathCount += 1
       return
