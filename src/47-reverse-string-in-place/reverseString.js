@@ -1,9 +1,12 @@
-function reverseCharactersInPlace(arrayOfChars) {
-    // Reverse the input array of characters in place
-    const endPoint = Math.floor(arrayOfChars.length / 2)
-    for (let i = 0; i < endPoint; i += 1) {
-        const oppositeI = arrayOfChars.length - 1 - i
-        swap(i, oppositeI, arrayOfChars)
+function reverseCharactersInPlace(
+    arrayOfChars,
+    startInd = 0,
+    endInd = arrayOfChars.length - 1
+) {
+    while (startInd < endInd) {
+        swap(startInd, endInd, arrayOfChars)
+        startInd ++
+        endInd --
     }
     return arrayOfChars
 }
@@ -15,4 +18,4 @@ function swap(a, b, array) {
     return array
 }
 
-module.exports = {reverseCharactersInPlace}
+module.exports = { reverseCharactersInPlace }
