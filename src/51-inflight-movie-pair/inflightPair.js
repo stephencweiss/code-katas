@@ -4,30 +4,19 @@
  * @return {boolean} - If two movie lengths exist that pair exactly with the flight length
  */
 function inflightPair(flightLength, movieLengths) {
-    const movieLengthDb = movieLengths.reduce((db,movieLength) => {
-        if (db[movieLength]) {
-            db[movieLength] += 1
+    const observedMovieLengths = new Set()
+
+    for (let i = 0; i < movieLengths.length; i += 1) {
+        const currentMovieLength = movieLengths[i]
+        const targetMovieLength = flightLength - currentMovieLength
+        if (observedMovieLengths.has(targetMovieLength)) {
+            return true
         } else {
-            db[movieLength] = 1
-        }
-        return db
-    }, {})
-
-
-    for(let i = 0; i < movieLengths.length; i += 1) {
-        const targetMovieLength = flightLength - movieLengths[i]
-        const isExactlyHalf = targetMovieLength === movieLengths[i]
-        if (movieLengthDb[targetMovieLength]) {
-            if (!isExactlyHalf) {
-                return true
-            } else if (movieLengthDb[targetMovieLength] >= 2) {
-                return true
-            }
+            observedMovieLengths.add(currentMovieLength)
         }
     }
 
-
-    return false;
+    return false
 }
 
-module.exports = {inflightPair}
+module.exports = { inflightPair }
