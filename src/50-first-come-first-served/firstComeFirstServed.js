@@ -37,6 +37,6 @@ function firstComeFirstServed(dineInOrders, takeOutOrders, servedOrders) {
 module.exports = { firstComeFirstServed }
 
 const takeOutOrders = [1, 3, 5]
-const dineInOrders = [2, 4, 6]
-const servedOrders = [1, 2, 3, 5, 4, 6]
-firstComeFirstServed(dineInOrders, takeOutOrders, servedOrders)
+        const dineInOrders = [2, 4, 6, 8, 10, 12, 16]
+        const servedOrders = [1, 2, 4, 6, 8, 10, 3, 12, 16, 5]
+        firstComeFirstServed(dineInOrders, takeOutOrders, servedOrders)
