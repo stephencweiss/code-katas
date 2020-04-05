@@ -1,29 +1,46 @@
-function findADuplicate(arr) {
-    let start = 0
-    let end = arr.length - 1
+function findADuplicate(numbersArr) {
+    let start = 1
+    let end = numbersArr.length - 1
     // set a start and end
     while (start < end) {
         // find the midpoint of the slice (floor between start and the end-start / 2)
         const midpoint = Math.floor(start + (end - start) / 2)
-        const midpointVal = arr[midpoint]
-        const leftVal = arr[midpoint - 1]
-        const rightVal = arr[midpoint + 1]
-        // check if the midpoint is a duplicate (look left and right)
-        if (midpointVal === leftVal || midpointVal === rightVal) {
-            return midpointVal
-        }
-        if(end - start === 1){
-            throw new Error(`No Duplicate!`)
-        }
-        if (midpointVal <= midpoint) {
-            end = midpoint
+        let lowerFloor = 1
+        let lowerCeiling = midpoint
+        let upperFloor = midpoint + 1
+        let upperCeiling = end
+
+        const distinctPossibilitiesInLowerRange = lowerCeiling - lowerFloor + 1
+        let foundInLowerRange = 0;
+
+        numbersArr.forEach(number => {
+            if(lowerFloor <= number && number <= lowerCeiling) {
+                foundInLowerRange += 1
+            }
+        })
+
+        if (distinctPossibilitiesInLowerRange < foundInLowerRange ) {
+            start = lowerFloor;
+            end = lowerCeiling
         } else {
-            start = midpoint
+            start = upperFloor
+            end = upperCeiling
         }
+        // look at the numbers in the lower range
+        // if the numbers in lower range > distinctpossibilities in lower range
+            // then the duplicate must be in the lower range
+            // start = lowerFloor
+            // end == lowerCeiling
+
+        // else
+            // start = upper floor
+            // end = upper ceiling
+
     }
+    return start
 }
 
 module.exports = { findADuplicate }
 
-const arr = [1,2,2,3,4,5,6,7,8,9]
-findADuplicate(arr)
+const numbers = [1,2,3]
+findADuplicate(numbers)
