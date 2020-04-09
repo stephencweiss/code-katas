@@ -26,16 +26,6 @@ function findADuplicate(numbersArr) {
             start = upperFloor
             end = upperCeiling
         }
-        // look at the numbers in the lower range
-        // if the numbers in lower range > distinctpossibilities in lower range
-            // then the duplicate must be in the lower range
-            // start = lowerFloor
-            // end == lowerCeiling
-
-        // else
-            // start = upper floor
-            // end = upper ceiling
-
     }
     return start
 }
