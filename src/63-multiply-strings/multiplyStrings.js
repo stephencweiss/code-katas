@@ -3,26 +3,34 @@
  * @param {string} num2
  * @return {string}
  */
-function multiplyStrings(num1, num2) {
-    return String(convertStringToInt(num1) * convertStringToInt(num2))
-}
+var multiply = function(s1, s2) {
+    if (s1 === '0' || s2 === '0') return '0' // early escape for multiplying by 0.
 
-function convertStringToInt(numStr) {
-    return numStr
-        .split('')
-        .map(letter => charCodes[letter.charCodeAt()])
-        .join('')
-}
+    const m = s1.length
+    const n = s2.length
+    // create an empty array of zeros; m+n-1 length is due to the matrix of numbers being multiplied
+    // it does _not_ have to do with the size of the result
+    const multiplied = Array(m + n - 1).fill(0)
 
-const charCodes = {
-    48: 0,
-    49: 1,
-    50: 2,
-    51: 3,
-    52: 4,
-    53: 5,
-    54: 6,
-    55: 7,
-    56: 8,
-    57: 9,
+    /**
+     * For each integer, use a unary operator to cast a string as a number
+     * starting at the end of each string, we work our way right to left
+     * the position in our holding array, multiplied
+     * we start at the "end" to be in the ones place and count up
+     */
+    for (let i = m - 1; 0 <= i; i--) {
+        for (let j = n - 1; 0 <= j; j--) {
+            multiplied[i + j] += +s1[i] * +s2[j]
+        }
+    }
+
+    /**
+     * Carry the "tens" for each position
+     */
+    for (let i = multiplied.length - 1; 0 < i; i -= 1) {
+        multiplied[i - 1] += Math.floor(multiplied[i] / 10)
+        multiplied[i] %= 10
+    }
+
+    return multiplied.join('')
 }
