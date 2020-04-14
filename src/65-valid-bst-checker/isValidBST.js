@@ -5,13 +5,12 @@
 // second insight was that when I go left, i reset the _upper_ bound
 // and go right, reset the _lower_ bound. I had this backwards for a long time
 
+
 function isValidBST(node) {
     let isValid = true
     function evaluateNode(node, lowerBound, upperBound) {
         if (!isValidDescendant(node.value, lowerBound, upperBound)) {
-            console.log({ node, lowerBound, upperBound })
             isValid = false
-            return isValid
         }
         isValid && node.left && evaluateNode(node.left, lowerBound, node.value)
         isValid && node.right && evaluateNode(node.right, node.value, upperBound)
