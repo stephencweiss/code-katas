@@ -4,8 +4,6 @@
 
 // second insight was that when I go left, i reset the _upper_ bound
 // and go right, reset the _lower_ bound. I had this backwards for a long time
-
-
 function isValidBST(node) {
     let isValid = true
     function evaluateNode(node, lowerBound, upperBound) {
@@ -13,11 +11,17 @@ function isValidBST(node) {
             isValid = false
         }
         isValid && node.left && evaluateNode(node.left, lowerBound, node.value)
-        isValid && node.right && evaluateNode(node.right, node.value, upperBound)
+        isValid &&
+            node.right &&
+            evaluateNode(node.right, node.value, upperBound)
     }
 
-    isValid && node.left && evaluateNode(node.left, Number.NEGATIVE_INFINITY, node.value)
-    isValid && node.right && evaluateNode(node.right, node.value, Number.POSITIVE_INFINITY)
+    isValid &&
+        node.left &&
+        evaluateNode(node.left, Number.NEGATIVE_INFINITY, node.value)
+    isValid &&
+        node.right &&
+        evaluateNode(node.right, node.value, Number.POSITIVE_INFINITY)
     return isValid
 }
 
