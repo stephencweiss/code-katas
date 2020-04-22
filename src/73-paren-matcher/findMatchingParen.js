@@ -1,13 +1,13 @@
 function findMatchingParen(str, position){
     const characters = str.split('');
-    const stack = []
+    let openParensWithoutMatch = 0
     for(let i = position; i < characters.length; i ++){
         if(characters[i] == '('){
-            stack.push(characters[i])
+            openParensWithoutMatch += 1
         }
         if(characters[i] == ')'){
-            stack.pop()
-            if(stack.length === 0){
+            openParensWithoutMatch -= 1
+            if(openParensWithoutMatch === 0){
                 return i
             }
         }
