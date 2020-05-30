@@ -3,42 +3,43 @@
  * @return {number}
  */
 var myAtoi = function(str) {
+    const WHITE_SPACE = 32
+    const POSITIVE = 43
+    const NEGATIVE = 45
     const INT_MAX = Math.pow(2, 31) - 1
     const INT_MIN = Math.pow(-2, 31)
-    const WHITE_SPACE_CODE = 32
-    const NEGATIVE_SIGN_CODE = 45
-    const POSITIVE_SIGN_CODE = 43
-    let sign = 1 // default to positive
-    let signApplied = false
-    let wordStarted = false
-    const firstWordChars = []
+    let result = 0
+    if (!str.length) return result
 
-    for (char in str) {
-        const letterCode = str[char].charCodeAt()
-        const numberCode = letterCode - 48
-        const isValidNumber = 0 <= numberCode && numberCode <= 9
-        const isSign =
-            letterCode === NEGATIVE_SIGN_CODE ||
-            letterCode === POSITIVE_SIGN_CODE
-        if (letterCode !== WHITE_SPACE_CODE) {
-            wordStarted = true
-        }
-        if (isSign) {
-            if (firstWordChars.length > 0) break
-            if (signApplied && firstWordChars.length == 0) break
-            sign = letterCode === NEGATIVE_SIGN_CODE ? -1 : 1
-            signApplied = true
-        }
-        if (isValidNumber) {
-            firstWordChars.push(numberCode)
-        }
-        if (wordStarted && !isValidNumber && !isSign) {
+    let index = 0
+    // iterate to non white space
+    while (index < str.length && str[index].charCodeAt() == WHITE_SPACE) {
+        index += 1
+    }
+
+    // place the sign
+    let sign = null
+    if ( index < str.length && (
+        str[index].charCodeAt() === NEGATIVE ||
+        str[index].charCodeAt() === POSITIVE)
+    ) {
+        sign = str[index].charCodeAt() === NEGATIVE ? -1 : 1
+        index += 1
+    }
+
+    while (index < str.length) {
+        const charCode = str[index].charCodeAt() - 48
+        if (0 <= charCode && charCode <= 9) {
+            result *= 10
+            result += charCode
+        } else {
             break
         }
+        index += 1
     }
-    let int = sign * firstWordChars.join('')
-    if (isNaN(int)) int = 0
-    if (INT_MAX < int) int = INT_MAX
-    if (int < INT_MIN) int = INT_MIN
-    return int
+    result = sign ? sign * result : result
+    if (isNaN(result)) result = 0
+    if (INT_MAX < result) result = INT_MAX
+    if (result < INT_MIN) result = INT_MIN
+    return result
 }
