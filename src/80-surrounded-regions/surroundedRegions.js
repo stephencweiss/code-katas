@@ -1,152 +1,77 @@
 /**
  * @param {character[][]} board
  * @return {void} Do not return anything, modify board in-place instead.
+ * The intuition here is that we're "infecting" Os that do not have access to the border.
+ * We make a _first_ pass over the board - starting at the edges - to mark the Os with border access as Ps (Protected)
+ * Then we make a second pass over the board infecting the remaining Os to Xs (they were infected) and reverting the
+ * Ps to their original O state
  */
-var solve = function(board) {
-    if (!board.length) return
-    const minRow = 0
-    const minColumn = 0
-    const maxRow = board.length - 1
-    const maxColumn = board[0].length - 1
-    const previouslyEvaluated = new Set()
-    for (let row = 0; row <= maxRow; row += 1) {
-        for (let column = 0; column <= maxColumn; column += 1) {
-            if (
-                board[row][column] == 'O' &&
-                !previouslyEvaluated.has(`${row}${column}`)
-            ) {
-                // find all neighbors that are "O"
-                // mark them all as seen
-                // if any of them are on the border, escape
-                // if none of them are on the border, infect them all
+var solve = function (board) {
+    if (!board.length) return board
+    const rows = board.length
+    const columns = board[0].length
+    const directions = [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1],
+    ] // top, bottom, left, right
 
-                const neighbors = findAllNeighbors({ row, column })
-                if(!neighborsReachBorder(neighbors)){
-                    neighbors.forEach(({row, column}) => board[row][column] = 'X')
+    function searchForNeighbors(row, column) {
+        if (board[row][column] !== 'O') return
+        const queue = []
+        queue.push(new Cell(row, column))
+
+        while (queue.length) {
+            const cell = queue.shift()
+            board[cell.row][cell.column] = 'P'
+
+            directions.forEach(([dX, dY]) => {
+                const row = cell.row + dX
+                const column = cell.column + dY
+                if (
+                    0 <= row &&
+                    row < rows &&
+                    0 <= column &&
+                    column < columns &&
+                    board[row][column] === 'O'
+                ) {
+                    board[row][column] = 'P'
+                    queue.push(new Cell(row, column))
                 }
+            })
+
+        }
+    }
+    // search first and last column
+    for (let row = 0; row < rows; row += 1) {
+        searchForNeighbors(row, 0)
+        searchForNeighbors(row, columns - 1)
+    }
+
+    // search first and last row
+    for (let column = 0; column < columns; column += 1) {
+        searchForNeighbors(0, column)
+        searchForNeighbors(rows - 1, column)
+    }
+
+    // infect vulnerable, return protected
+    for (let row = 0; row < rows; row += 1) {
+        for (let column = 0; column < columns; column += 1) {
+            if (board[row][column] === 'P') {
+                board[row][column] = 'O'
+            } else if (board[row][column] === 'O') {
+                board[row][column] = 'X'
             }
         }
-    }
-
-    /**
-     * If a cell does _not_ have a path to the border, infect all neighbors before returning
-     * If a cell _does_ have a path to the border, track the whole path so we don't need to visit again
-     * @returns {void}
-     */
-    function findAllNeighbors({ row, column }) {
-        const stack = [] // since order doesn't matter, switching to stack for performance
-        const visited = new Set()
-        stack.push({ column, row })
-
-        while (stack.length) {
-            const { column: targetCol, row: targetRow } = stack.pop()
-            visited.add({ column: targetCol, row: targetRow })
-            previouslyEvaluated.add(`${targetRow}${targetCol}`)
-
-            if (
-                targetRow + 1 <= maxRow &&
-                board[targetRow + 1][targetCol] == 'O' &&
-                !previouslyEvaluated.has(`${targetRow + 1}${targetCol}`)
-            )
-                stack.push({ column: targetCol, row: targetRow + 1 })
-            if (
-                minRow <= targetRow - 1 &&
-                board[targetRow - 1][targetCol] == 'O' &&
-                !previouslyEvaluated.has(`${targetRow - 1}${targetCol}`)
-            )
-                stack.push({ column: targetCol, row: targetRow - 1 })
-            if (
-                minColumn <= targetCol - 1 &&
-                board[targetRow][targetCol - 1] == 'O' &&
-                !previouslyEvaluated.has(`${targetRow}${targetCol - 1}`)
-            )
-                stack.push({ column: targetCol - 1, row: targetRow })
-            if (
-                targetCol + 1 <= maxColumn &&
-                board[targetRow][targetCol + 1] == 'O' &&
-                !previouslyEvaluated.has(`${targetRow}${targetCol + 1}`)
-            )
-                stack.push({ column: targetCol + 1, row: targetRow })
-        }
-        // visited.forEach(({ row, column }) => (board[row][column] = 'X'))
-        return visited
-    }
-
-    function neighborsReachBorder(neighbors) {
-        for (neighbor in neighbors) {
-            const { row, column } = neighbors[neighbor]
-            if (onBorder(row, column)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    function onBorder({ row, column }) {
-        return !(
-            minRow <= row - 1 &&
-            row + 1 <= maxRow &&
-            minColumn <= column - 1 &&
-            column + 1 <= maxColumn
-        )
     }
 
     return
 }
 
-let X = 'X'
-let O = 'O'
-let myBoard = (
-    [['O', 'X', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-    ['O', 'O', 'O', 'X', 'O', 'O', 'O', 'O', 'X'],
-    ['O', 'X', 'O', 'X', 'O', 'O', 'O', 'O', 'X'],
-    ['O', 'O', 'O', 'O', 'X', 'O', 'O', 'O', 'O'],
-    ['X', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'X'],
-    ['X', 'X', 'O', 'O', 'X', 'O', 'X', 'O', 'X'],
-    ['O', 'O', 'O', 'X', 'O', 'O', 'O', 'O', 'O'],
-    ['O', 'O', 'O', 'X', 'O', 'O', 'O', 'O', 'O'],
-    ['O', 'O', 'O', 'O', 'O', 'X', 'X', 'O', 'O']])
-
-let smallBoard = [
-    [X, X, X, X],
-    [X, O, O, X],
-    [X, O, O, X],
-    [X, X, X, X],
-]
-
-let expected = [
-    [X, X, X, X, X, X, O],
-    [X, X, X, X, O, O, O],
-    [X, X, X, X, X, X, X],
-    [X, X, X, X, X, X, X],
-    [X, X, X, X, X, X, X],
-    [X, O, X, X, X, X, X],
-]
-
-solve(myBoard)
-// input
-
-
-
-    //mine
-//     (['O', 'X', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-//     ['O', 'O', 'O', 'X', 'X', 'X', 'X', 'X', 'X'],
-//     ['O', 'X', 'O', 'X', 'X', 'X', 'X', 'X', 'X'],
-//     ['O', 'O', 'O', 'O', 'X', 'X', 'X', 'O', 'O'],
-//     ['X', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'X'],
-//     ['X', 'X', 'O', 'O', 'X', 'O', 'X', 'X', 'X'],
-//     ['O', 'O', 'O', 'X', 'O', 'O', 'O', 'O', 'O'],
-//     ['O', 'O', 'O', 'X', 'O', 'O', 'O', 'O', 'O'],
-//     ['O', 'O', 'O', 'O', 'O', 'X', 'X', 'O', 'O'])
-// ][
-    // expected
-    // (['O', 'X', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
-    // ['O', 'O', 'O', 'X', 'O', 'O', 'O', 'O', 'X'],
-    // ['O', 'X', 'O', 'X', 'O', 'O', 'O', 'O', 'X'],
-    // ['O', 'O', 'O', 'O', 'X', 'O', 'O', 'O', 'O'],
-    // ['X', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'X'],
-    // ['X', 'X', 'O', 'O', 'X', 'O', 'X', 'O', 'X'],
-    // ['O', 'O', 'O', 'X', 'O', 'O', 'O', 'O', 'O'],
-    // ['O', 'O', 'O', 'X', 'O', 'O', 'O', 'O', 'O'],
-    // ['O', 'O', 'O', 'O', 'O', 'X', 'X', 'O', 'O'])
-
+class Cell {
+    constructor(row, column) {
+        this.row = row
+        this.column = column
+    }
+}
