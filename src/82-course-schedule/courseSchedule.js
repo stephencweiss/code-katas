@@ -11,7 +11,7 @@ var findOrder = function(numCourses, prerequisites) {
 
     for (let [courseName, node] of graph.nodes) {
         if (
-            addClassToSchedule({
+            !addClassToSchedule({
                 courseName,
                 graph,
                 node,
@@ -43,6 +43,10 @@ class Graph {
     }
 }
 
+/**
+ *
+ * @returns {boolean} If the class is not added (because a cycle is detected), false, else true
+ */
 function addClassToSchedule({
     courseName,
     node,
@@ -58,10 +62,10 @@ function addClassToSchedule({
             let course = edge.name
             if (reviewedCourses.has(course)) continue
             if (coursesInProcess.has(course)) {
-                return true
+                return false
             }
             if (
-                addClassToSchedule({
+                !addClassToSchedule({
                     courseName: course,
                     node: edge,
                     reviewedCourses,
@@ -69,7 +73,7 @@ function addClassToSchedule({
                     courseSchedule,
                 })
             ) {
-                return true
+                return false
             }
 
         }
@@ -79,7 +83,7 @@ function addClassToSchedule({
     coursesInProcess.delete(courseName)
     reviewedCourses.add(courseName)
     courseSchedule.add(courseName)
-    return false
+    return true
 }
 
 function buildGraph(numCourses, prerequisites) {
