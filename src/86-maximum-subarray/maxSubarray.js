@@ -18,8 +18,6 @@ var maxSubArray = function(nums) {
 maxSubArray([-2,1,-3,4,-1,2,1,-5,4])
 
 
-// recursive strategy
-// base case is when the array is of length 0
 
 function findSumOfArray(arr){
     if(arr.length == 0) throw new Error('Array must have at least one element')
