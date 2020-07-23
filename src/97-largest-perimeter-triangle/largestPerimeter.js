@@ -1,31 +1,32 @@
 /**
- *
+ * Intuition is that by sorting in a descending order,
+ * we can find the largest triangles _first_.
+ * The first triangle that is valid will by definition
+ * have the largest perimeter - allowing for an early
+ * return.
  * @param {number[]} A
  * @returns {number} Perimeter of the largest triangle
  */
 var largestPerimeter = function (A) {
-    let maxPerimeter = 0
-    if (A.length < 3) return maxPerimeter
+    if (A.length < 3) return 0
 
-    const sides = A.sort(sorter)
-    // for each combination of three sides
-    for (let s1 = 0; s1 < sides.length - 2; s1 += 1) {
-        for (let s2 = s1 + 1; s2 < sides.length - 1; s2 += 1) {
-            for (let s3 = s2 + 1; s3 < sides.length; s3 += 1) {
-                const side1 = sides[s1]
-                const side2 = sides[s2]
-                const side3 = sides[s3]
-                if (nonZeroAreaTriangle(side1, side2, side3)) {
-                    maxPerimeter = Math.max(maxPerimeter, side1 + side2 + side3)
-                }
-            }
+    const sides = A.sort(sortDescending)
+    const triangle = sides.splice(0, 3)
+
+    while (sides.length >= 0) {
+        if (nonZeroAreaTriangle(triangle)) {
+            return triangle.reduce((acc, cur) => acc + cur)
+        } else {
+            if (sides.length === 0) break
+            triangle.shift()
+            triangle.push(sides.shift())
         }
     }
-    return maxPerimeter
+    return 0
 }
 
-function sorter(a, b) {
-    return a < b ? -1 : 1
+function sortDescending(a, b) {
+    return a > b ? -1 : 1
 }
 
 /**
@@ -33,8 +34,9 @@ function sorter(a, b) {
  * @param {number[]} sides
  * @returns boolean
  */
-function nonZeroAreaTriangle(side1, side2, side3) {
-    return side1 + side2 > side3
+function nonZeroAreaTriangle(sides) {
+    const [side1, side2, side3] = sides
+    return side1 < side2 + side3
 }
 
 A1 = largestPerimeter([1, 2, 2, 4, 18, 8])
