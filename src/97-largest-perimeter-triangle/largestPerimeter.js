@@ -11,15 +11,11 @@ var largestPerimeter = function (A) {
     if (A.length < 3) return 0
 
     const sides = A.sort(sortDescending)
-    const triangle = sides.splice(0, 3)
 
-    while (sides.length >= 0) {
+    for (let i = 0; i < sides.length - 2; i += 1) {
+        const triangle = [sides[i], sides[i + 1], sides[i + 2]]
         if (nonZeroAreaTriangle(triangle)) {
             return triangle.reduce((acc, cur) => acc + cur)
-        } else {
-            if (sides.length === 0) break
-            triangle.shift()
-            triangle.push(sides.shift())
         }
     }
     return 0
