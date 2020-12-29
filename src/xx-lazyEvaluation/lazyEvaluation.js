@@ -25,13 +25,17 @@ function Lazy() {
     this.chain = []
 }
 
-Lazy.prototype.add = function(fn, ...args) {
-    this.chain.push(fn.bind(this, ...args))
-    return this
-}
-
-Lazy.prototype.invoke = function(incomingArgs) {
-    return this.chain.reduce((args, fn) => fn(...args), incomingArgs)
+Lazy.prototype = {
+    add: function(fn, ...args) {
+        this.chain.push([fn, args])
+        return this
+    },
+    invoke: function(incomingArgs) {
+        return this.chain.reduce(
+            (args, [fn, originalArgs]) => fn(...originalArgs, ...args),
+            incomingArgs
+        )
+    },
 }
 
 console.log(
