@@ -1,15 +1,13 @@
 const {concatenatedBinary, convertIntToBinary, convertBinaryToDecimal } = require('./concatConsecutiveBinary')
 
 describe('Concatenating Consecutive Binary Numbers', () => {
-    test('Small N', ()=>{
+    test('Various N', ()=>{
         expect(concatenatedBinary(1)).toBe(1)
-    })
-    test('Medium N', ()=>{
         expect(concatenatedBinary(3)).toBe(27)
-    })
-    test('Larger N', ()=>{
         expect(concatenatedBinary(12)).toBe(118505380540) // Note: this is different from the Leetcode variant
+        expect(concatenatedBinary(42)).toBe(727837408)
     })
+
 })
 
 describe('Converting Ints To Binary', () => {

@@ -1,4 +1,24 @@
+// This one puts the modulo at the right place -- it also doesn't really both with binary and instead simply accounts for it with a power
 function concatenatedBinary(n) {
+    let num = 0
+    for (let i = 1; i <= n; i++) {
+        num *= 2 ** i.toString(2).length
+        num += i // I don't understand this line
+        num %= 10 ** 9 + 7
+    }
+    return num
+}
+
+function __concatenatedBinary(n) {
+    const binary = [...Array(n)]
+        .fill(0)
+        .map((el, index) => (el = index + 1))
+        .reduce((acc, int) => acc + int.toString(2), '')
+
+    return parseInt(binary, 2) % (10 ** 9 + 7)
+}
+
+function _concatenatedBinary(n) {
     let convertedBinaryStrings = []
     for (let i = 1; i <= n; i++) {
         convertedBinaryStrings.push(convertIntToBinary(i))
@@ -40,7 +60,6 @@ function convertBinaryToDecimal(binary) {
     }
     return sum //% (10**9 +7)
 }
-
 
 concatenatedBinary(12)
 module.exports = {
