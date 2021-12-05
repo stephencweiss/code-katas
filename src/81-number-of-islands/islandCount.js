@@ -42,7 +42,7 @@ var numIslands = function(grid) {
     for (let row = 0; row < rows; row += 1) {
         for (let column = 0; column < columns; column += 1) {
             if (grid[row][column] == WATER) continue
-            islandCount += 1
+            islandCount += 1 // does this work?? would expect to have to check against a visited plot
             searchNeighbors(row, column)
         }
     }
