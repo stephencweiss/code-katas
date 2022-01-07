@@ -2,32 +2,47 @@
  * @param {number[]} nums
  * @return {number}
  */
-var maxSubArray = function(nums) {
+const maxSubArray = function(nums) {
     // the local maximum for a position in nums is the max of (num, num + local max of preceding position)
     let localMax = Number.NEGATIVE_INFINITY
     let globalMax = Number.NEGATIVE_INFINITY
-    for (let i = 0; i < nums.length; i+=1){
-        console.log(`pre addition of ${nums[i]}, ${localMax}`)
-        localMax = Math.max(nums[i], nums[i]+localMax)
-        console.log(`post addition of ${nums[i]}, ${localMax}`)
+    for (let i = 0; i < nums.length; i += 1) {
+        const current = nums[i]
+        console.log(`pre addition`, { current, localMax, globalMax })
+        localMax = Math.max(nums[i], nums[i] + localMax)
         globalMax = Math.max(localMax, globalMax)
+        console.log(`post addition`, { current, localMax, globalMax })
     }
     return globalMax
-};
+}
 
-maxSubArray([-2,1,-3,4,-1,2,1,-5,4])
+const maxSubArrayWithTabulation = function(nums) {
+    const subArraySums = [nums[0]]
+    for (let i = 1; i < nums.length; i++) {
+        const cur = nums[i]
+        subArraySums[i] = Math.max(subArraySums[i - 1] + cur, cur)
+    }
+    return subArraySums.reduce((acc, cur) => Math.max(acc, cur))
+}
 
+console.log(`maxSub:`, maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]))
+console.log(
+    `maxSubTab:`,
+    maxSubArrayWithTabulation([-2, 1, -3, 4, -1, 2, 1, -5, 4])
+)
 
-
-function findSumOfArray(arr){
-    if(arr.length == 0) throw new Error('Array must have at least one element')
-    if(arr.length == 1) return arr[0]
+//
+function findSumOfArray(arr) {
+    if (arr.length == 0) throw new Error('Array must have at least one element')
+    if (arr.length == 1) return arr[0]
     return findSumOfArray(arr.slice(0, arr.length - 1)) + arr[arr.length - 1]
 }
 
-let arr = [1,2,4,8]
-console.log(findSumOfArray(arr))
+const findSumArrayAlt = arr => arr.reduce((acc, cur) => acc + cur)
 
+let arr = [1, 2, 4, 8]
+console.log(findSumOfArray(arr))
+console.log(findSumArrayAlt(arr))
 
 
 
