@@ -45,3 +45,17 @@ function printNodes(node){
         return printNodes(node.next)
     }
 }
+
+const node = new LinkedListNode(1)
+console.log(`original -->`)
+printNodes(node)
+const newHead2 = linkedListReverser(node)
+console.log(`reversed -->`)
+printNodes(newHead2)
+
+const nodeEmpty = new LinkedListNode()
+console.log(`original -->`)
+printNodes(nodeEmpty)
+const newHead3 = linkedListReverser(nodeEmpty)
+console.log(`reversed -->`)
+printNodes(newHead3)
